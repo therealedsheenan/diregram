@@ -2,6 +2,8 @@ import bcrypt from "bcrypt-nodejs";
 import crypto from "crypto";
 import mongoose from "mongoose";
 
+import { PostModel } from "./Post";
+
 export type UserModel = mongoose.Document & {
   email: string,
   password: string,
@@ -20,7 +22,8 @@ export type UserModel = mongoose.Document & {
   },
 
   comparePassword: comparePasswordFunction,
-  gravatar: (size: number) => string
+  gravatar: (size: number) => string,
+  posts: PostModel[]
 };
 
 type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
@@ -41,13 +44,15 @@ const userSchema = new mongoose.Schema({
   google: String,
   tokens: Array,
 
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+
   profile: {
     name: String,
     gender: String,
     location: String,
     website: String,
     picture: String
-  }
+  },
 }, { timestamps: true });
 
 /**
