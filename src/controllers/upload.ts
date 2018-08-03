@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import multer  from "multer";
-import { default as Upload, UploadModel } from "../models/Upload";
 import mongoose from "mongoose";
+
+import { default as Upload, UploadModel } from "../models/Upload";
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -36,28 +37,25 @@ export let uploadMiddleware = upload.single("image");
 /*
 * uploading image
 */
-export let post = (req: Request, res: Response) => {
+export let postUpload = (req: Request, res: Response, next: NextFunction) => {
   const newUpload = new Upload({
     _id: new mongoose.Types.ObjectId(),
-    name: req.body.name,
     image: req.file.path
   });
 
   newUpload
     .save()
-    .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Created product successfully",
-        uploadedImage: {
-          name: result.name,
-          _id: result._id,
-          request: {
-            type: "GET",
-            url: "http://localhost:8000/uploads/" + result._id
-          }
-        }
-      });
+    .then((result: UploadModel) => {
+      // console.log(result);
+      req.upload = result;
+      next();
+      // res.status(201).json({
+      //   message: "Uploaded image successfully",
+      //   upload: {
+      //     _id: result._id,
+      //     image: result.image
+      //   }
+      // });
     })
     .catch(err => {
       console.log(err);
@@ -71,7 +69,7 @@ export let post = (req: Request, res: Response) => {
 /*
 * getting image
 */
-export let get = (req: Request, res: Response) => {
+export let getUpload = (req: Request, res: Response) => {
   const id = req.params.uploadId;
   Upload.findById(id)
     .select("name image _id owner")
@@ -80,11 +78,7 @@ export let get = (req: Request, res: Response) => {
       console.log("From database", doc);
       if (doc) {
         res.status(200).json({
-          product: doc,
-          request: {
-            type: "GET",
-            url: "http://localhost:8000/uploads/"
-          }
+          upload: doc
         });
       } else {
         res
