@@ -1,5 +1,4 @@
 import passport from "passport";
-import request from "request";
 import passportLocal from "passport-local";
 import passportFacebook from "passport-facebook";
 import _ from "lodash";
@@ -125,7 +124,7 @@ export let isAuthenticated = (req: Request, res: Response, next: NextFunction) =
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/login");
+  res.redirect("/user/login");
 };
 
 /**

@@ -20,15 +20,12 @@ const MongoStore = mongo(session);
 dotenv.config({ path: ".env.example" });
 
 // Controllers (route handlers)
-import * as homeController from "./controllers/home";
-import * as userController from "./controllers/user";
-import * as apiController from "./controllers/api";
-import * as contactController from "./controllers/contact";
-import * as uploadController from "./controllers/upload";
+import routes from "./routes";
 
-
-// API keys and Passport configuration
-import * as passportConfig from "./config/passport";
+// models
+import "./models/Upload";
+import "./models/Post";
+import "./models/User";
 
 // Create Express server
 const app = express();
@@ -69,16 +66,18 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
+
+// redirect
 app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
   if (!req.user &&
-    req.path !== "/login" &&
-    req.path !== "/signup" &&
+    req.path !== "/user/login" &&
+    req.path !== "/user/signup" &&
     !req.path.match(/^\/auth/) &&
     !req.path.match(/\./)) {
     req.session.returnTo = req.path;
   } else if (req.user &&
-    req.path == "/account") {
+    req.path == "/user") {
     req.session.returnTo = req.path;
   }
   next();
@@ -91,41 +90,8 @@ app.use(
 // static uploads folder
 app.use("/uploads", express.static("uploads"));
 
-/**
- * Primary app routes.
- */
-app.get("/", homeController.index);
-app.get("/login", userController.getLogin);
-app.post("/login", userController.postLogin);
-app.get("/logout", userController.logout);
-app.get("/forgot", userController.getForgot);
-app.post("/forgot", userController.postForgot);
-app.get("/reset/:token", userController.getReset);
-app.post("/reset/:token", userController.postReset);
-app.get("/signup", userController.getSignup);
-app.post("/signup", userController.postSignup);
-app.get("/contact", contactController.getContact);
-app.post("/contact", contactController.postContact);
-app.post("/upload", uploadController.uploadMiddleware, uploadController.post);
-app.get("/upload/:uploadId", uploadController.get);
-app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
-app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
-app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
-app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
+// routes
+app.use(routes);
 
-/**
- * API examples routes.
- */
-app.get("/api", apiController.getApi);
-app.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
-
-/**
- * OAuth authentication routes. (Sign in)
- */
-app.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "public_profile"] }));
-app.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
-  res.redirect(req.session.returnTo || "/");
-});
 
 export default app;
