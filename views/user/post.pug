@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+  .page-header
+    h3 Create post
+  form.form-horizontal(id='upload-form', action="/user/post/new", method='POST', enctype="multipart/form-data")
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group
+      label.col-sm-3.control-label(for='name') Name
+      .col-sm-7
+        input.form-control-file(type='text', name='name', id='name', required)
+    .form-group
+      label.col-sm-3.control-label(for='image') Upload
+      .col-sm-7
+        input.form-control-file(type='file', name='image', id='image', required)
+    .form-group
+      .col-sm-offset-3.col-sm-7
+        button.btn.btn-success(type='submit')
+          | Post
