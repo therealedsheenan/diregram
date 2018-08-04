@@ -25,6 +25,8 @@
             a(href='/user/signup') Create Account
         else
           li(class="")
+            a(href='/user/posts') My Posts
+          li(class="")
             a(href='/user/post') New Post
           li.dropdown(class=(title == 'Account Management') ? 'active' : undefined)
             a.dropdown-toggle(href='#', data-toggle='dropdown')
