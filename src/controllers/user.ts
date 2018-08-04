@@ -150,6 +150,7 @@ export let createPost = (req: Request, res: Response, next: NextFunction) => {
   newPost
     .save()
     .then((result: PostModel) => {
+      // populat post's author
       req.flash("success", { msg: "Post successfully created." });
       User.findById(req.user.id, (err, user: UserModel) => {
         if (err) { return next(err); }
@@ -175,9 +176,16 @@ export let createPost = (req: Request, res: Response, next: NextFunction) => {
 * GET /user/posts
 */
 export let getPostsPage = (req: Request, res: Response, next: NextFunction) => {
-  User.findById(req.user.id, (err, user: UserModel) => {
-    if (err) { return next(err); }
-
+  User
+    .findById(req.user.id)
+    .populate("posts")
+    .exec((err, posts) => {
+      if (err) {
+        req.flash("errors", { msg: "Posts not available." });
+        return next(err);
+      }
+      console.log(posts);
+      res.render("user/posts");
   });
 };
 

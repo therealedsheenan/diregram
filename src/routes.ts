@@ -37,6 +37,7 @@ router.post(
   userController.createPost
 );
 router.get("/user/posts", passportConfig.isAuthenticated, userController.getPostsPage);
+
 // contact
 router.get("/contact", contactController.getContact);
 router.post("/contact", contactController.postContact);
