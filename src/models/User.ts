@@ -3,9 +3,11 @@ import crypto from "crypto";
 import mongoose from "mongoose";
 
 import { PostModel } from "./Post";
+import { CommentModel } from "./Comment";
 
 export type UserModel = mongoose.Document & {
   email: string,
+  username: string,
   password: string,
   passwordResetToken: string,
   passwordResetExpires: Date,
@@ -23,7 +25,8 @@ export type UserModel = mongoose.Document & {
 
   comparePassword: comparePasswordFunction,
   gravatar: (size: number) => string,
-  posts: PostModel[]
+  posts: PostModel[],
+  comments: CommentModel[]
 };
 
 type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
@@ -35,6 +38,7 @@ export type AuthToken = {
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
+  username: { type: String, unique: true },
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
@@ -45,6 +49,7 @@ const userSchema = new mongoose.Schema({
   tokens: Array,
 
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
 
   profile: {
     name: String,
