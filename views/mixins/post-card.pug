@@ -1,0 +1,41 @@
+mixin postCard(baseUrl, post)
+  .post
+    .post-owner
+      a(href=`${baseUrl}/user/${post.owner.username}`)
+        if post.owner.profile.picture
+          img(src=`${post.owner.profile.picture}`, alt=`${post.owner.profile.name}`)
+        else
+          img(src=`${post.owner.gravatar(60)}`, alt=`${post.owner.profile.name}`)
+        span
+          | #{post.owner.username}
+
+    figure.post-image
+      img(src=`${baseUrl}/${post.image.image}`)
+      figcaption
+        span.title
+          | #{post.title}
+        span.date
+          | #{post.createdAt}
+    .post-caption
+      p
+        | #{post.caption}
+
+    .comments
+      .comments-item
+        each c in post.comments
+          .comments-item--content
+            span
+              | #{c.owner.username}
+            p
+              | #{c.content}
+      .comment-form
+        form.form-horizontal(action=`/user/post/${post._id}/comment`, method='POST')
+          input(type='hidden', name='_csrf', value=_csrf)
+          .form-group
+            .col-sm-12
+              textarea(placeholder="Enter comment...", id="content" name="content", required)
+          .form-group
+            .col-sm-7
+              button.btn.btn-success(type='submit')
+                | Comment
+

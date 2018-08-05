@@ -1,4 +1,5 @@
 extends ../layout
+include ../mixins/post-card
 
 block content
   .page-header
@@ -10,14 +11,4 @@ block content
       .col-sm-8.col-sm-offset-2
         if posts
           each p in posts
-            .post
-              figure.post-image
-                img(src=`${baseUrl}/${p.image.image}`)
-                figcaption
-                  span.title
-                    | #{p.title}
-                  span.date
-                    | #{p.createdAt}
-              .post-caption
-                p
-                  | #{p.caption}
+            +postCard(baseUrl, p)
