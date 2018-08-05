@@ -6,13 +6,17 @@ block content
   form.form-horizontal(id='upload-form', action="/user/post/new", method='POST', enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value=_csrf)
     .form-group
-      label.col-sm-3.control-label(for='caption') Caption
-      .col-sm-7
-        input(type='text', name='caption', id='caption', required)
-    .form-group
       label.col-sm-3.control-label(for='image') Upload
       .col-sm-7
         input.form-control-file(type='file', name='image', id='image', required)
+    .form-group
+      label.col-sm-3.control-label(for='title') Title
+      .col-sm-7
+        input(type='text', name='title', id='title', required)
+    .form-group
+      label.col-sm-3.control-label(for='caption') Caption
+      .col-sm-7
+        textarea(placeholder="Enter caption...", id="caption" name="caption", required)
     .form-group
       .col-sm-offset-3.col-sm-7
         button.btn.btn-success(type='submit')

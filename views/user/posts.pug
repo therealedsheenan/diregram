@@ -4,3 +4,18 @@ block content
   .page-header
     h3 Posts page
 
+  .container
+    .row
+      .col-sm-8.col-sm-offset-2
+        each p in posts
+          .post
+            figure.post-image
+              img(src=`${baseUrl}/${p.image.image}`)
+              figcaption
+                span.title
+                  | #{p.title}
+                span.date
+                  | #{p.createdAt}
+            .post-caption
+              p
+                | #{p.caption}
