@@ -6,9 +6,9 @@ block content
   form.form-horizontal(id='upload-form', action="/user/post/new", method='POST', enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value=_csrf)
     .form-group
-      label.col-sm-3.control-label(for='name') Name
+      label.col-sm-3.control-label(for='caption') Caption
       .col-sm-7
-        input.form-control-file(type='text', name='name', id='name', required)
+        input(type='text', name='caption', id='caption', required)
     .form-group
       label.col-sm-3.control-label(for='image') Upload
       .col-sm-7

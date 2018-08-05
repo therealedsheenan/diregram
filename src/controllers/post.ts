@@ -15,7 +15,7 @@ export let post = (req: Request, res: Response) => {
   newPost
     .save()
     .then((result: PostModel) => {
-      console.log(result)
+      console.log(result);
       res.status(201).json({
         post: {
           _id: result._id,
@@ -48,7 +48,7 @@ export let get = (req: Request, res: Response) => {
           .json({ message: "No valid entry found for provided ID" });
       }
     })
-    .catch(() => {
+    .catch((err) => {
       console.log(err);
       res.status(500).json({ error: err });
     });

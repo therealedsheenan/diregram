@@ -37,7 +37,7 @@ export let uploadMiddleware = upload.single("image");
 /*
 * uploading image
 */
-export let postUpload = (req: Request, res: Response, next: NextFunction) => {
+export let postUpload = (req: any, res: Response, next: NextFunction) => {
   const newUpload = new Upload({
     _id: new mongoose.Types.ObjectId(),
     image: req.file.path
@@ -46,16 +46,8 @@ export let postUpload = (req: Request, res: Response, next: NextFunction) => {
   newUpload
     .save()
     .then((result: UploadModel) => {
-      // console.log(result);
       req.upload = result;
       next();
-      // res.status(201).json({
-      //   message: "Uploaded image successfully",
-      //   upload: {
-      //     _id: result._id,
-      //     image: result.image
-      //   }
-      // });
     })
     .catch(err => {
       console.log(err);

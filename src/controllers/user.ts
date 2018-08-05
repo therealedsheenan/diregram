@@ -9,7 +9,6 @@ import { WriteError } from "mongodb";
 
 import "../config/passport";
 import { default as Post, PostModel } from "../models/Post";
-import * as upload from "./upload";
 
 /**
  * GET /login
@@ -64,8 +63,8 @@ export let logout = (req: Request, res: Response) => {
 };
 
 /**
- * GET /signup
- * Signup page.
+ * GET /sign-nup
+ * Sign-up page.
  */
 export let getSignup = (req: Request, res: Response) => {
   if (req.user) {
@@ -77,7 +76,7 @@ export let getSignup = (req: Request, res: Response) => {
 };
 
 /**
- * POST /signup
+ * POST /sig-nup
  * Create a new local account.
  */
 export let postSignup = (req: Request, res: Response, next: NextFunction) => {
@@ -118,20 +117,20 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
 
 /*
  * GET /user
- * Profile page.
+ * settings page.
  */
 export let getAccount = (req: Request, res: Response) => {
   console.log(req.user);
-  res.render("user/profile", {
+  res.render("user/settings", {
     title: "Account Management"
   });
-}
+};
 
 /*
 * GET /user/post
-**/
+*/
 export let getPostPage = (req: Request, res: Response) => {
-  res.render("user/post", {
+  res.render("user/new-post", {
     title: "Create post"
   });
 };
@@ -139,11 +138,12 @@ export let getPostPage = (req: Request, res: Response) => {
 /*
 * POST /user/post
 */
-export let createPost = (req: Request, res: Response, next: NextFunction) => {
+export let createPost = (req: any, res: Response, next: NextFunction) => {
   // upload.postUpload
   const newPost = new Post({
     owner: req.user.id,
-    // caption:
+    caption: req.body.caption,
+    title: req.body.title,
     image: req.upload._id
   });
 
@@ -160,7 +160,7 @@ export let createPost = (req: Request, res: Response, next: NextFunction) => {
             req.flash("errors", { msg: "User is not available." });
             return next(err);
           }
-          res.render("user/post");
+          res.redirect("/user/posts");
         });
       });
     })
@@ -174,23 +174,65 @@ export let createPost = (req: Request, res: Response, next: NextFunction) => {
 
 /*
 * GET /user/posts
+* current logged-in User posts page
 */
 export let getPostsPage = (req: Request, res: Response, next: NextFunction) => {
   User
     .findById(req.user.id)
-    .populate("posts")
-    .exec((err, posts) => {
+    .populate({
+      path: "posts",
+      options: { sort: { "createdAt": "desc" }},
+      populate: {
+        path: "image"
+      }
+    })
+    .exec((err, user: UserModel) => {
       if (err) {
         req.flash("errors", { msg: "Posts not available." });
         return next(err);
       }
-      console.log(posts);
-      res.render("user/posts");
+      const posts = user.posts;
+      const fullUrl = `${req.protocol}://${req.get("host")}`;
+      res.render("user/posts", {
+        test: "tester",
+        posts,
+        baseUrl: fullUrl
+      });
+  });
+};
+
+/*
+* GET /user/:name
+* User profile page
+*/
+export let getUserPage = (req: Request, res: Response, next: NextFunction) => {
+  const userName = req.params.name;
+  User.findOne({ "profile.name": userName }, (err, user: UserModel) => {
+    if (err || !user) {
+      res.status(404);
+      return next(err);
+    }
+    const opts = [{
+      path: "posts",
+      options: { sort: { "createdAt": "desc" }},
+      populate: {
+        path: "image"
+      }
+    }];
+    const fullUrl = `${req.protocol}://${req.get("host")}`;
+    User.populate(user, opts, (err, user: UserModel) => {
+      const posts = user.posts;
+      res.render("user/show", {
+        posts,
+        username: userName,
+        baseUrl: fullUrl
+      });
+    });
   });
 };
 
 /**
- * POST /account/profile
+ * POST /user
  * Update profile information.
  */
 export let postUpdateProfile = (req: Request, res: Response, next: NextFunction) => {
