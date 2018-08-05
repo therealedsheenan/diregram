@@ -1,0 +1,16 @@
+.comments {
+  &-form {}
+  &-item {
+    &--content {
+      &:not(:first-child) {
+        margin: 10px 0;
+      }
+      span {
+        font-weight: bold;
+      }
+      p {
+        margin: 0;
+      }
+    }
+  }
+}
