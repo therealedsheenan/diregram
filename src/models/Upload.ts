@@ -13,7 +13,7 @@ const uploadSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" }
   // required: [true, "can't be blank"]
-});
+}, { timestamps: true });
 
 // declare model
 const Upload = mongoose.model("Upload", uploadSchema);

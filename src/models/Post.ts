@@ -10,8 +10,9 @@ export type PostModel = mongoose.Document & {
 const postSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   caption: String,
+  title: String,
   image: { type: mongoose.Schema.Types.ObjectId, ref: "Upload" }
-});
+}, { timestamps: true });
 
 const Post = mongoose.model("Post", postSchema);
 export default Post;
