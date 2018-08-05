@@ -1,0 +1,30 @@
+.post {
+  border-radius: 3px;
+  border: 1px solid #e6e6e6;
+  padding: 20px;
+  &:not(:first-child) {
+    margin-top: 40px;
+  }
+  &-image {
+    img {
+      border: 1px solid #f1f1f1;
+    }
+    figcaption {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      .title {
+        font-weight: bold;
+      }
+
+      .date {
+        font-size: 10px;
+        color: #868686;
+      }
+    }
+  }
+
+  &-caption {
+    margin-top: 20px;
+  }
+}

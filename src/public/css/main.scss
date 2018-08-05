@@ -1,5 +1,6 @@
 @import "themes/default/variables";
 
+@import "lib/normalize";
 @import "lib/bootstrap/bootstrap";
 @import "lib/font-awesome/font-awesome";
 
@@ -68,3 +69,19 @@ textarea {
 .fa {
   margin-right: 6px;
 }
+
+// images
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+// text area
+textarea {
+  height: 100px;
+  width: 100%;
+}
+
+// modules
+@import "modules/post";
