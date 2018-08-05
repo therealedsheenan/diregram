@@ -3,7 +3,6 @@ import passport from "passport";
 
 import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
-import * as contactController from "./controllers/contact";
 import * as uploadController from "./controllers/upload";
 import * as passportConfig from "./config/passport";
 import * as apiController from "./controllers/api";
@@ -24,7 +23,7 @@ router.get( "/user/reset/:token", userController.getReset);
 router.post( "/user/reset/:token", userController.postReset);
 router.get( "/user/signup", userController.getSignup);
 router.post( "/user/signup", userController.postSignup);
-router.post( "/user/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
+router.post( "/user/settings", passportConfig.isAuthenticated, userController.postUpdateProfile);
 router.post( "/user/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 router.post( "/user/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 router.get( "/user/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
@@ -37,10 +36,7 @@ router.post(
   userController.createPost
 );
 router.get("/user/posts", passportConfig.isAuthenticated, userController.getPostsPage);
-
-// contact
-router.get("/contact", contactController.getContact);
-router.post("/contact", contactController.postContact);
+router.get("/user/:name", userController.getUserPage);
 
 // upload
 router.post(
@@ -51,16 +47,18 @@ router.post(
 );
 router.get("/upload/:uploadId", uploadController.getUpload);
 
-// posts
-
 // api
-router.get("/api", apiController.getApi);
 router.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
 
 // OAuth authentication routes. (Sign-in with 3rd party apps)
 router.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "public_profile"] }));
 router.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/user/login" }), (req, res) => {
   res.redirect(req.session.returnTo || "/");
+});
+
+// 404
+router.get("*", (req, res) => {
+  res.render("404");
 });
 
 
