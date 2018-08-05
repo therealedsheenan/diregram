@@ -26,6 +26,7 @@ import routes from "./routes";
 import "./models/Upload";
 import "./models/Post";
 import "./models/User";
+import "./models/Comment";
 
 // Create Express server
 const app = express();
