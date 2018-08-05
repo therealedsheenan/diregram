@@ -6,6 +6,7 @@ import * as userController from "./controllers/user";
 import * as uploadController from "./controllers/upload";
 import * as passportConfig from "./config/passport";
 import * as apiController from "./controllers/api";
+import * as commentController from "./controllers/comment";
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ router.post(
   userController.createPost
 );
 router.get("/user/posts", passportConfig.isAuthenticated, userController.getPostsPage);
-router.get("/user/:name", userController.getUserPage);
+router.get("/user/:username", userController.getUserPage);
 
 // upload
 router.post(
@@ -47,8 +48,19 @@ router.post(
 );
 router.get("/upload/:uploadId", uploadController.getUpload);
 
+// comments
+router.post(
+  "/user/post/:postId/comment",
+  commentController.postComment
+);
+
 // api
-router.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
+router.get(
+  "/api/facebook",
+  passportConfig.isAuthenticated,
+  passportConfig.isAuthorized,
+  apiController.getFacebook
+);
 
 // OAuth authentication routes. (Sign-in with 3rd party apps)
 router.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "public_profile"] }));
