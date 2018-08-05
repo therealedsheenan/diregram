@@ -1,5 +1,28 @@
 extends layout
 
 block content
-  h1 Home page
-  p.lead This is the home page.
+  .container
+    .row
+      .col-sm-8.col-sm-offset-2
+        if posts
+          each p in posts
+            .post
+              .post-owner
+                a(href=`${baseUrl}/user/${p.owner.profile.name}`)
+                  if p.owner.profile.picture
+                    img(src=`${p.owner.profile.picture}`, alt=`${p.owner.profile.name}`)
+                  else
+                    img(src=`${p.owner.gravatar(60)}`, alt=`${p.owner.profile.name}`)
+                  span
+                    | #{p.owner.profile.name}
+
+              figure.post-image
+                img(src=`${baseUrl}/${p.image.image}`)
+                figcaption
+                  span.title
+                    | #{p.title}
+                  span.date
+                    | #{p.createdAt}
+              .post-caption
+                p
+                  | #{p.caption}
