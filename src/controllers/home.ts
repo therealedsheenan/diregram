@@ -20,10 +20,17 @@ export let index = (req: Request, res: Response, next: NextFunction) => {
         path: "image"
       }, {
         path: "owner",
-        select: "profile"
+        select: "profile username"
+      }, {
+        path: "comments",
+        populate: {
+          path: "owner",
+          select: "username"
+        }
       }];
 
       const fullUrl = `${req.protocol}://${req.get("host")}`;
+      console.log(posts);
       Post.populate(posts, opts, (err, posts: Array<PostModel>) => {
         res.render("home", {
           posts,
